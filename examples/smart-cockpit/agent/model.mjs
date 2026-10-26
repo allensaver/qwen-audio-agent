@@ -23,7 +23,10 @@ export class DashScopeCockpitModel {
       messages,
       ...(tools.length ? { tools } : {}),
       tool_choice: tools.length ? 'auto' : 'none',
-      enable_thinking: true,
+      // DriveVoice Agent Lab (Project 2) fork change: thinking is on by default
+      // (upstream behavior), but benchmark runs may set BENCH_ENABLE_THINKING=off
+      // to conserve API quota. The run configuration must be recorded in reports.
+      enable_thinking: process.env.BENCH_ENABLE_THINKING !== 'off',
     }, signal ? { signal } : undefined)
     const message = completion.choices?.[0]?.message
     if (!message) throw new Error('Cockpit Agent model returned no message')
